@@ -1,5 +1,4 @@
 
-
 #include <iostream>
 
 #include <glad.h>
@@ -117,6 +116,7 @@ int main()
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
+	
 
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -132,6 +132,13 @@ int main()
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+
+	// Testing Shaders functions
+	int nrAttributes;
+	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
+
 
 	while (!glfwWindowShouldClose(window))
 	{
