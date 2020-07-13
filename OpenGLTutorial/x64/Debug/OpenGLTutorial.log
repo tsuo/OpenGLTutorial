@@ -1,3 +1,6 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(467,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (OpenGLTutorial2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   main.cpp
+C:\Users\princ\Desktop\CODE\opengl\OpenGLTutorial\OpenGLTutorial\main.cpp(66,15): warning C4101: 'EBO': unreferenced local variable
+C:\Users\princ\Desktop\CODE\opengl\OpenGLTutorial\OpenGLTutorial\main.cpp(216,15): warning C4200: nonstandard extension used: zero-sized array in struct/union
+C:\Users\princ\Desktop\CODE\opengl\OpenGLTutorial\OpenGLTutorial\main.cpp(216,15): message : This member will be ignored by a defaulted constructor or copy/move assignment operator
   OpenGLTutorial.vcxproj -> C:\Users\princ\Desktop\CODE\opengl\OpenGLTutorial\x64\Debug\OpenGLTutorial.exe
