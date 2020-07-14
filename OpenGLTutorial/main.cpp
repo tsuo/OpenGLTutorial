@@ -1,3 +1,12 @@
+/*
+Finish setting up Polygon constructors
+Added simple vertices and indices system
+
+TODO:
+- Work on Graphics drawing Polygons
+- Should work for all Polygons
+*/
+
 
 #include <iostream>
 
@@ -213,7 +222,8 @@ class Polygon
 private:
 	int numVertices;
 	VertexInfo* vertices;
-	int indices[];    // for EBO draw
+	int numIndices;
+	int* indices;    // for EBO draw
 
 	void loadVertexData(VertexInfo* vertex, float x, float y, float z, float r, float g, float b, float a, float textx, float texty)
 	{
@@ -227,48 +237,113 @@ private:
 		vertex->TextLocX = textx;
 		vertex->TextLocY = texty;
 	}
-public:
-	Polygon(int n, int inds[], float locations[]) {
-		int locindex = 0;
-		numVertices = n;
-		vertices = new VertexInfo[n];
-		for (int i = 0; i < n; i++)
-		{
-			this->loadVertexData(&vertices[i], locations[locindex+0], locations[locindex+1], locations[locindex+2],
-								1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
-			locindex += 3;
-		}
-	}
-	
-	Polygon(int n, int inds[], float locations[], float colors[])
+
+	void loadIndicesData(int index[], int indlen)
 	{
-		numVertices = n;
-		vertices = new VertexInfo[n];
-		for (int i = 0; i < n; i++)
+		if (indlen > 0)
 		{
-			
+			memcpy(indices, index, sizeof(int) * indlen);
 		}
 	}
 
-	Polygon(int n, int inds[], float locations[], float colors[], float textLocs[])
-	{
-		numVertices = n;
-		vertices = new VertexInfo[n];
+public:
+	Polygon(int ln, int ii, int inds[], float locations[]) {
+		int locindex = 0;
+		numIndices = ii;
+		numVertices = ln;
+		vertices = new VertexInfo[ln];
+		indices = new int[ii];
+
+		// load vertices array
+		for (int i = 0; i < ln; i++)
+		{
+			this->loadVertexData(&vertices[i], locations[locindex], locations[locindex+1], locations[locindex+2],
+								1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
+			locindex += 3;
+		}
+		
+		// load indices array
+		this->loadIndicesData(inds, ii);
+		
 	}
 	
-	Polygon(int n, int inds[], VertexInfo verts[])
+	Polygon(int ln, int ii, int inds[], float locations[], float colors[])
 	{
-		numVertices = n;
-		vertices = new VertexInfo[n];
+		int locindex = 0;
+		int colindex = 0;
+		numIndices = ii;
+		numVertices = ln;
+		vertices = new VertexInfo[ln];
+		indices = new int[ii];
+
+		// load vertices array
+		for (int i = 0; i < ln; i++)
+		{
+			this->loadVertexData(&vertices[i], locations[locindex], locations[locindex + 1], locations[locindex + 2],
+				colors[colindex], colors[colindex+1], colors[colindex+2], colors[colindex+3], 0.0f, 0.0f);
+			locindex += 3;
+			colindex += 4;
+		}
+
+		// load indices array
+		this->loadIndicesData(inds, ii);
+		
+	}
+
+	Polygon(int ln, int ii, int inds[], float locations[], float colors[], float textLocs[])
+	{
+		int locindex = 0;
+		int colindex = 0;
+		int texindex = 0;
+		numIndices = ii;
+		numVertices = ln;
+		vertices = new VertexInfo[ln];
+		indices = new int[ii];
+
+		// load vertices array
+		for (int i = 0; i < ln; i++)
+		{
+			this->loadVertexData(&vertices[i], locations[locindex], locations[locindex + 1], locations[locindex + 2],
+				colors[colindex], colors[colindex + 1], colors[colindex + 2], colors[colindex + 3], 
+				textLocs[texindex], textLocs[texindex+1]);
+			locindex += 3;
+			colindex += 4;
+			texindex += 2;
+		}
+
+		// load indices array
+		this->loadIndicesData(inds, ii);
+	}
+	
+	Polygon(int ln, int ii, int inds[], VertexInfo verts[])
+	{
+		numIndices = ii;
+		numVertices = ln;
+		vertices = new VertexInfo[ln];
+		indices = new int[ii];
+
+		// load vertices array
+		memcpy(vertices, verts, ln * sizeof(VertexInfo));
+		
+		// load indices array
+		this->loadIndicesData(inds, ii);
 	}
 
 	void printVerticesInfo()
 	{
 		for (int i = 0; i < numVertices; i++)
 		{
-			std::cout << "Location: [" << vertices[i].X << "," << vertices[i].Y << "," << vertices[i].Z << "]" << std::endl;
-			std::cout << "Color: [" << vertices[i].R << "," << vertices[i].G << "," << vertices[i].B << "," << vertices[i].A << "]" << std::endl;
-			std::cout << "Texture Index: [" << vertices[i].TextLocX << "," << vertices[i].TextLocY << "]" << std::endl;
+			std::cout << i << "|Location: [" << vertices[i].X << "," << vertices[i].Y << "," << vertices[i].Z << "]" << std::endl;
+			std::cout << i << "|Color: [" << vertices[i].R << "," << vertices[i].G << "," << vertices[i].B << "," << vertices[i].A << "]" << std::endl;
+			std::cout << i << "|Texture Index: [" << vertices[i].TextLocX << "," << vertices[i].TextLocY << "]" << std::endl;
+		}
+	}
+
+	void printIndices()
+	{
+		for (int i = 0; i < numIndices; i++)
+		{
+			std::cout << i << "|" << indices[i] << std::endl;
 		}
 	}
 };
@@ -279,7 +354,20 @@ class Graphics
 private:
 
 public:
+	void drawTriangle(Polygon p, float x, float y, float z)
+	{
 
+	}
+
+	void drawPolygon(Polygon p, float x, float y, float z)
+	{
+
+	}
+
+	void drawPolygonGroup(Polygon* ps, float x, float y, float z)
+	{
+
+	}
 };
 
 class Game
@@ -296,15 +384,6 @@ public:
 		framebufWidth = 0;
 		framebufHeight = 0;
 		name = n;
-
-		std::cout << sizeof(VertexInfo) << std::endl;
-		float f[] = {
-			0.2f, 0.4f, 0.0f,
-			0.5f, 0.7f, 0.0f,
-			0.7f, 0.7f, 0.0f
-		};
-		Polygon triangle(3, {}, f);
-		triangle.printVerticesInfo();
 
 		// init code and return window object
 		// requires private variables width, height, and name to be predefined
@@ -376,10 +455,42 @@ public:
 
 int main()
 {
-    //return tutorial();
+
+	std::cout << sizeof(VertexInfo) << std::endl;
+	float f[] = {
+		0.2f, 0.4f, 0.0f,
+		0.5f, 0.7f, 0.0f,
+		0.7f, 0.7f, 0.0f
+	};
+	float c[] = { 0.1f, 0.4f, 0.7f, 1.0f,
+				  0.2f, 0.3f, 0.4f, 0.5f,
+				  0.4f, 0.5f, 0.6f, 0.7f};
+	float t[] = { 0.0f, 0.5f, 
+				  0.0f, 0.5f,
+				  0.0f, 0.5f};
+
+	VertexInfo verts[] = {	{0.2f, 0.4f, 0.0f, 0.1f, 0.4f, 0.7f, 1.0f, 0.0f, 0.5f},
+							{0.5f, 0.7f, 0.0f, 0.2f, 0.3f, 0.4f, 0.5f, 0.0f, 0.5f},
+							{0.7f, 0.7f, 0.0f, 0.4f, 0.5f, 0.6f, 0.7f, 0.0f, 0.5f}
+						};
+	int inds[] = { 1, 2, 3, 4, 5, 6 };
+
+	Polygon triangle(3, 6, inds, f, c, t);
+	//triangle.printVerticesInfo();
+
+	Polygon triangle2(3, 6, inds, verts);
+	triangle2.printVerticesInfo();
+	std::cout << std::endl;
+	triangle2.printIndices();
+	std::cout << std::endl;
+
+	//verts[2].TextLocY = 20.f;
+	//std::cout << verts[2].TextLocY << std::endl;
+	//triangle2.printVerticesInfo();
+
+	//return tutorial();
 	char name[] = "Game";
 	Game game(1200, 800, name);
-	
 
 	return 0;
 }
